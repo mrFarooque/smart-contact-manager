@@ -2,11 +2,15 @@ package com.smartcontactmanager.scm.entity;
 
 import com.smartcontactmanager.scm.enums.Provider;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.ArrayList;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "users")
 public class UserEntity {
     @Id
@@ -36,7 +40,7 @@ public class UserEntity {
     @Column(name = "provider_user_id")
     private String providerUserId;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ContactEntity> contactEntities = new ArrayList<>();
+//    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<ContactEntity> contactEntities = new ArrayList<>();
 
 }

@@ -1,6 +1,8 @@
 package com.smartcontactmanager.scm.controller;
 
 import com.smartcontactmanager.scm.model.Contact;
+import com.smartcontactmanager.scm.model.Contacts;
+import com.smartcontactmanager.scm.model.request.ContactQuery;
 import com.smartcontactmanager.scm.model.request.ContactRequest;
 import com.smartcontactmanager.scm.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +24,14 @@ public class UserController {
 
     }
 
-    @PostMapping("/{userId}/addContact")
-    public Contact addContact(@PathVariable String userId,
-                           @RequestParam String name,
-                           @RequestParam(required = false) String email,
-                           @RequestParam String phoneNumber,
-                           @RequestParam(required = false) String address,
-                           @RequestParam(required = false) String description,
-                           @RequestParam(required = false) boolean favourite,
-                           @RequestParam(required = false) MultipartFile image) throws IOException {
-        ContactRequest contactRequest = new ContactRequest(name, email, phoneNumber, address, description, favourite, image);
+    @PostMapping("/{userId}/contact")
+    public Contact addContact(@PathVariable String userId, ContactRequest contactRequest){
         return contactService.addContact(userId, contactRequest);
+    }
+
+    @GetMapping("/{userId}/contact")
+    public Contacts getAllContacts(@PathVariable String userId, ContactQuery contactQuery) {
+        return contactService.getContacts(userId, contactQuery);
     }
 
     public void viewAllContacts() {

@@ -2,6 +2,7 @@ package com.smartcontactmanager.scm.controller;
 
 import com.smartcontactmanager.scm.exception.ErrorMessage;
 import com.smartcontactmanager.scm.exception.InvalidRequestException;
+import com.smartcontactmanager.scm.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -25,5 +26,11 @@ public class ExceptionHandlerController {
                 messageSource.getMessage(ex.getErrorCode().getErrorCode(), ex.getArguments(), LocaleContextHolder.getLocale()));
     }
 
+    @ExceptionHandler(value = {ResourceNotFoundException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage resourceNotFoundException(ResourceNotFoundException ex, Locale locale) {
+        return new ErrorMessage(400, ex.getErrorCode().getApiErrorCode(),
+                messageSource.getMessage(ex.getErrorCode().getErrorCode(), ex.getArguments(), LocaleContextHolder.getLocale()));
+    }
 
 }

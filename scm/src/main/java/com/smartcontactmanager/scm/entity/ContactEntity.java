@@ -26,7 +26,7 @@ public class ContactEntity {
     @Column(name = "image")
     private byte[] image;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 }
