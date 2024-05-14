@@ -5,6 +5,7 @@ import com.smartcontactmanager.scm.entity.UserEntity;
 import com.smartcontactmanager.scm.exception.InvalidRequestException;
 import com.smartcontactmanager.scm.model.Contact;
 import com.smartcontactmanager.scm.model.Contacts;
+import com.smartcontactmanager.scm.model.DashBoard;
 import com.smartcontactmanager.scm.model.User;
 import com.smartcontactmanager.scm.model.request.ContactQuery;
 import com.smartcontactmanager.scm.model.request.ContactRequest;
@@ -33,6 +34,32 @@ public class ContactServiceImpl implements ContactService {
     private ContactRepository contactRepository;
 
     @Override
+    public DashBoard dashboard() {
+        DashBoard dashBoard = new DashBoard();
+        // find userId from the Request Context
+        // query database with findAll Contacts with current userId
+//        String userId = "constant_user_id";
+        String userId = "000";
+        long totalContacts = getTotalNumberOfContacts(userId);
+        long totalFavouriteContacts = getTotalNumberOfFavouriteContacts(userId);
+        dashBoard.setTotalContacts(totalContacts);
+        dashBoard.setTotalFavourites(totalFavouriteContacts);
+        return dashBoard;
+    }
+
+    private long getTotalNumberOfFavouriteContacts(String userId) {
+        Specification<ContactEntity> specification = Specification.where(((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("userEntity").get("id"), userId)));
+        specification = specification.and(((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("favorite"), true)));
+        return contactRepository.count(specification);
+    }
+
+    private long getTotalNumberOfContacts(String userId) {
+        Specification<ContactEntity> specification = Specification.where(((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("userEntity").get("id"), userId)));
+        return contactRepository.count(specification);
+    }
+    @Override
     public Contact addContact(String userId, ContactRequest contactRequest) {
         validate(contactRequest);
         UserEntity userEntity = userService.getUserEntityById(userId);
@@ -57,7 +84,6 @@ public class ContactServiceImpl implements ContactService {
                 criteriaBuilder.equal(root.get("userEntity").get("id"), userId)));
         System.out.println("contactQuery: " + contactQuery);
         if (contactQuery != null && contactQuery.getName() != null && !contactQuery.getName().isEmpty()) {
-            System.out.println("names: " + contactQuery.getName());
             specification = specification.and(((root, query, criteriaBuilder) -> root.get("name").in(contactQuery.getName())));
         }
         List<ContactEntity> contactEntities = contactRepository.findAll(specification);

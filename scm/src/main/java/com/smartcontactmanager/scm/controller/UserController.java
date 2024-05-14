@@ -2,6 +2,7 @@ package com.smartcontactmanager.scm.controller;
 
 import com.smartcontactmanager.scm.model.Contact;
 import com.smartcontactmanager.scm.model.Contacts;
+import com.smartcontactmanager.scm.model.DashBoard;
 import com.smartcontactmanager.scm.model.request.ContactQuery;
 import com.smartcontactmanager.scm.model.request.ContactRequest;
 import com.smartcontactmanager.scm.service.ContactService;
@@ -20,8 +21,8 @@ public class UserController {
     private ContactService contactService;
 
     @GetMapping("/dashboard")
-    public void dashboard() {
-
+    public DashBoard dashboard() {
+       return contactService.dashboard();
     }
 
     @PostMapping("/{userId}/contact")

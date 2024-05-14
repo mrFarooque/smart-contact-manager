@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ContactRepository extends JpaRepository<ContactEntity, String> {
     List<ContactEntity> findAll(Specification<ContactEntity> specification);
+    long count(Specification<ContactEntity> specification);
 }
