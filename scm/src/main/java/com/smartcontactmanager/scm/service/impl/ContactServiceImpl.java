@@ -6,19 +6,16 @@ import com.smartcontactmanager.scm.exception.InvalidRequestException;
 import com.smartcontactmanager.scm.model.Contact;
 import com.smartcontactmanager.scm.model.Contacts;
 import com.smartcontactmanager.scm.model.DashBoard;
-import com.smartcontactmanager.scm.model.User;
 import com.smartcontactmanager.scm.model.request.ContactQuery;
 import com.smartcontactmanager.scm.model.request.ContactRequest;
 import com.smartcontactmanager.scm.repository.ContactRepository;
 import com.smartcontactmanager.scm.service.ContactService;
 import com.smartcontactmanager.scm.service.UserService;
-import jakarta.persistence.criteria.Subquery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,6 +27,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Autowired
     private UserService userService;
+
     @Autowired
     private ContactRepository contactRepository;
 
@@ -82,7 +80,6 @@ public class ContactServiceImpl implements ContactService {
     public Contacts getContacts(String userId, ContactQuery contactQuery) {
         Specification<ContactEntity> specification = Specification.where(((root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("userEntity").get("id"), userId)));
-        System.out.println("contactQuery: " + contactQuery);
         if (contactQuery != null && contactQuery.getName() != null && !contactQuery.getName().isEmpty()) {
             specification = specification.and(((root, query, criteriaBuilder) -> root.get("name").in(contactQuery.getName())));
         }
