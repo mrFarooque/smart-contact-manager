@@ -6,15 +6,24 @@ document
   .addEventListener("click", () => (window.location.href = "./index.html"));
 
 async function showDashboard() {
-  console.log("dashboard");
   async function getTotalNumberOfContacts() {
-    let response = await fetch(BASE_URL + "/api/user/dashboard").then((res) =>
-      res.json()
-    );
+    let response = await fetch(BASE_URL + "/api/user/dashboard", {
+      method: "get",
+      headers: {
+        accept: "application/json",
+      },
+      credentials: "include",
+    }).then((res) => {
+      if (res.status != 200) {
+        console.log("not logged in");
+        window.location.href = "./login.html";
+      } else {
+        return res.json();
+      }
+    });
     return response;
   }
   let dashboard = await getTotalNumberOfContacts();
-  console.log(dashboard);
   document.getElementById("total-contact-number").textContent =
     dashboard["totalContacts"];
   document.getElementById("total-favourite-contact-number").textContent =
@@ -37,6 +46,14 @@ function toggleDarkButton() {
   } else {
     htmlElement.setAttribute("data-bs-theme", "dark");
   }
+}
+
+async function logout() {
+  let response = await fetch(BASE_URL + "/api/user/logout", {
+    method: "get",
+    credentials: "include",
+  });
+  window.location.href = "./index.html";
 }
 
 // redirect to home page
@@ -62,3 +79,5 @@ document
     "click",
     () => (window.location.href = "./view_favourites.html")
   );
+// logout btn
+document.getElementById("logout-btn").addEventListener("click", logout);

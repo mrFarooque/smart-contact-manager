@@ -1,0 +1,13 @@
+.selected {
+  background-color: rgb(108 117 125);  /*dark mode*/
+  background-color: rgb(204 204 204); /*light mode*/
+  border-radius: 5px;
+}
+.sidebar-list > div {
+  border-radius: 5px;
+}
+.sidebar-list > div:hover {
+  background-color: rgb(108 117 125); /*dark mode*/
+  background-color: rgb(204 204 204); /*light mode*/
+  cursor: pointer;
+}
