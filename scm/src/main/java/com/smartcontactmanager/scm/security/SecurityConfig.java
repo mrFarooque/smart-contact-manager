@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -36,15 +38,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers(HttpMethod.POST, "/api/signup").permitAll();
             authorize.requestMatchers("/api/login").permitAll();
-            authorize.requestMatchers("/api/user/**").authenticated();
+            authorize.requestMatchers("/api/user/**").permitAll();
             authorize.anyRequest().permitAll();
         });
-//        httpSecurity.formLogin(form -> form.loginPage("/api/login").permitAll());
-        httpSecurity.formLogin(Customizer.withDefaults());
-//        httpSecurity.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
+
+//    @Bean
+//    public WebMvcConfigurer corsCofiguration() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").allowedHeaders("*").allowedMethods("*").allowedOrigins("http://localhost:5500");
+//            }
+//        };
+//    }
 }

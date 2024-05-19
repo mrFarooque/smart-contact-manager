@@ -1,5 +1,6 @@
 package com.smartcontactmanager.scm.security.helper;
 
+import com.smartcontactmanager.scm.exception.InvalidRequestException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,27 +14,34 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.smartcontactmanager.scm.exception.ErrorCodes.AUTHORIZATION_TOKEN_EXPIRED;
+
 @Service
 public class JwtUtil {
     private final String SECRET_KEY = "secret";
+
+    public String generateToken(String email) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, email);
+    }
+
+    public void validateToken(String token) {
+        if (isTokenExpired(token)) throw new InvalidRequestException(AUTHORIZATION_TOKEN_EXPIRED, "Auth Token Expired");
+    }
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String getTokenFormRequestContext() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()
-                .getHeader("Authorization").substring(7);
-    }
-
-    public Date extractExpiration(String token) {
+    private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
@@ -42,24 +50,9 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
-    }
-
-    public String generateToken(String email) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, email);
-    }
-
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String email = extractEmail(token);
-        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 }

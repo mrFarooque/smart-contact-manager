@@ -1,29 +1,33 @@
 // CONSTANTS
 const BASE_URL = "http://localhost:8080";
+const LOGIN_PAGE = "./login.html";
+const SCM_TOKEN_NAME = "scm-access-token";
 
 document
   .getElementById("sidebar-dashboard-text")
   .addEventListener("click", () => (window.location.href = "./index.html"));
 
 async function showDashboard() {
-  async function getTotalNumberOfContacts() {
+  async function getTotalNumberOfContacts(authToken) {
     let response = await fetch(BASE_URL + "/api/user/dashboard", {
       method: "get",
       headers: {
-        accept: "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + authToken,
       },
-      credentials: "include",
     }).then((res) => {
       if (res.status != 200) {
         console.log("not logged in");
-        window.location.href = "./login.html";
+        window.location.assign(LOGIN_PAGE);
       } else {
         return res.json();
       }
     });
     return response;
   }
-  let dashboard = await getTotalNumberOfContacts();
+  const authToken = localStorage.getItem(SCM_TOKEN_NAME);
+  if (authToken == null) window.location.assign(LOGIN_PAGE);
+  let dashboard = await getTotalNumberOfContacts(authToken);
   document.getElementById("total-contact-number").textContent =
     dashboard["totalContacts"];
   document.getElementById("total-favourite-contact-number").textContent =
@@ -48,12 +52,10 @@ function toggleDarkButton() {
   }
 }
 
-async function logout() {
-  let response = await fetch(BASE_URL + "/api/user/logout", {
-    method: "get",
-    credentials: "include",
-  });
-  window.location.href = "./index.html";
+// LOGOUT functionality
+function logout() {
+  window.localStorage.removeItem(SCM_TOKEN_NAME);
+  window.location.href = LOGIN_PAGE;
 }
 
 // redirect to home page

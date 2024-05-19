@@ -10,14 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api")
 public class LogInController {
 
     @Autowired
     private LogInService logInService;
 
-    @PostMapping("/login")
-    public ResponseEntity<AccessToken> login() {
+    @PostMapping("/tokens")
+    public ResponseEntity<AccessToken> generateAccessToken() {
         // generate a jwt token
         return new ResponseEntity<>(logInService.generateAccessToken(), HttpStatus.CREATED);
     }

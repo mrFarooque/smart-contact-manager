@@ -37,7 +37,7 @@ public class CustomFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader.startsWith("Basic ")) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Basic ")) {
             // trying to login
             String base64Credential = authorizationHeader.substring(6);
             byte[] decodedBytes = Base64.getDecoder().decode(base64Credential);
@@ -53,12 +53,13 @@ public class CustomFilter extends OncePerRequestFilter {
             } else {
                 throw new InvalidRequestException(INVALID_BASIC_AUTH, "invalid basic auth");
             }
-        } else if (authorizationHeader.startsWith("Bearer ")) {
+        } else if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             // trying to access a resource which requires bearer token
             String token = authorizationHeader.substring(7);
             String email = jwtUtil.extractEmail(token);
+            jwtUtil.validateToken(token);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (userDetails != null) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -12,8 +12,9 @@ async function login() {
     const credentials = email + ":" + password;
     const encodedCredentials = btoa(credentials);
     const basicAuthHeader = "Basic " + encodedCredentials;
+    console.log("credentials", credentials, basicAuthHeader);
 
-    let accessToken = await fetch(BASE_URL + "/api/login", {
+    let accessToken = await fetch(BASE_URL + "/api/tokens", {
       method: "post",
       headers: {
         Accept: "application/json",
@@ -22,6 +23,7 @@ async function login() {
       },
     })
       .then((res) => {
+        console.log("status", res.status);
         if (res.status == 201) {
           loginForm.reset();
           return res.json();
@@ -31,7 +33,7 @@ async function login() {
       .catch((err) => window.alert("email or password invalid"));
     console.log("access token", accessToken);
     window.localStorage.setItem("scm-access-token", accessToken["accessToken"]);
-    window.location.assign("./index.html")
+    window.location.assign("./index.html");
   }
 }
 
