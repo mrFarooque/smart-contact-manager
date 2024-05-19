@@ -38,10 +38,6 @@ async function login() {
 }
 
 async function googleAuthRedirect() {
-  // console.log("google");
-  // let response = await fetch(BASE_URL + "/oauth2/authorization/google", {
-  //   method: "get",
-  // }).then((res) => console.log(res));
   window.location.assign("http://localhost:8080/oauth2/authorization/google");
 }
 

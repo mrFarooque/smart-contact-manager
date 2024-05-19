@@ -9,5 +9,6 @@ public class ErrorCodes {
     public static ErrorCode INVALID_BASIC_AUTH = new ErrorCode(3, "invalid.basic.auth");
     public static ErrorCode AUTHORIZATION_HEADER_NOT_PRESENT = new ErrorCode(4, "authorization.header.not.present");
     public static ErrorCode AUTHORIZATION_TOKEN_EXPIRED = new ErrorCode(5, "authorization.token.expired");
-    public static ErrorCode AUTHORIZATION_TOKEN_INVALID = new ErrorCode(5, "authorization.token.invalid");
+    public static ErrorCode AUTHORIZATION_TOKEN_INVALID = new ErrorCode(6, "authorization.token.invalid");
+    public static ErrorCode USER_ALREADY_EXISTS = new ErrorCode(7, "user.already.exists");
 }

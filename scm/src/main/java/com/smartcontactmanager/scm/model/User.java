@@ -1,5 +1,6 @@
 package com.smartcontactmanager.scm.model;
 
+import com.smartcontactmanager.scm.model.enums.Provider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,6 +21,7 @@ public class User implements UserDetails {
     private String about;
     private String profilePic;
     private String phoneNumber;
+    private Provider provider;
     private boolean userEnabled = true;
     private boolean emailVerified = false;
     private boolean phoneVerified = false;

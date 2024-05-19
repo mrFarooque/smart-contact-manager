@@ -1,6 +1,7 @@
 // CONSTANTS
 const BASE_URL = "http://localhost:8080";
 const LOGIN_PAGE = "./login.html";
+const HOME_PAGE = "./index.html";
 const SCM_TOKEN_NAME = "scm-access-token";
 
 document
@@ -25,8 +26,15 @@ async function showDashboard() {
     });
     return response;
   }
-  const authToken = localStorage.getItem(SCM_TOKEN_NAME);
-  if (authToken == null) window.location.assign(LOGIN_PAGE);
+  // access token might come with query param
+  let authToken = localStorage.getItem(SCM_TOKEN_NAME);
+  if (authToken == null) {
+    const currentUrl = window.location.href;
+    const urlObject = new URL(currentUrl);
+    authToken = urlObject.searchParams.get("token");
+    if (authToken == null) window.location.assign(LOGIN_PAGE);
+    window.localStorage.setItem(SCM_TOKEN_NAME, authToken);
+  }
   let dashboard = await getTotalNumberOfContacts(authToken);
   document.getElementById("total-contact-number").textContent =
     dashboard["totalContacts"];
@@ -59,7 +67,6 @@ function logout() {
 }
 
 // redirect to home page
-document.getElementById("");
 // redirect to add contact page
 document
   .getElementById("add-contact")

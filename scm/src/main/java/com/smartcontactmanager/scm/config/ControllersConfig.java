@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class ControllersConfig {
@@ -19,5 +20,11 @@ public class ControllersConfig {
    @Bean
    public BCryptPasswordEncoder getPasswordEncoder() {
       return new BCryptPasswordEncoder();
+   }
+
+   @Bean
+   public WebClient webClient() {
+      return WebClient.builder()
+              .build();
    }
 }

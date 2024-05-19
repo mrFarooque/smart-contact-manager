@@ -37,6 +37,7 @@ public class CustomFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("authorizationHeader: " + authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Basic ")) {
             // trying to login
             String base64Credential = authorizationHeader.substring(6);

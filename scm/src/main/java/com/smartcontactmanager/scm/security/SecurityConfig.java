@@ -27,6 +27,9 @@ public class SecurityConfig {
     @Autowired
     private CustomFilter customFilter;
 
+    @Autowired
+    private OAuthSuccessHandler oAuthSuccessHandler;
+
     @Bean
     public AuthenticationProvider getAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -45,6 +48,9 @@ public class SecurityConfig {
             authorize.requestMatchers("/api/user/**").permitAll();
             authorize.anyRequest().permitAll();
         });
+        httpSecurity.oauth2Client(Customizer.withDefaults());
+        httpSecurity.oauth2Login(form -> form.loginPage("/login")
+                .successHandler(oAuthSuccessHandler));
         httpSecurity.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
