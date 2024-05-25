@@ -6,6 +6,7 @@ import com.smartcontactmanager.scm.exception.InvalidRequestException;
 import com.smartcontactmanager.scm.model.Contact;
 import com.smartcontactmanager.scm.model.Contacts;
 import com.smartcontactmanager.scm.model.DashBoard;
+import com.smartcontactmanager.scm.model.User;
 import com.smartcontactmanager.scm.model.request.ContactQuery;
 import com.smartcontactmanager.scm.model.request.ContactRequest;
 import com.smartcontactmanager.scm.repository.ContactRepository;
@@ -13,6 +14,7 @@ import com.smartcontactmanager.scm.service.ContactService;
 import com.smartcontactmanager.scm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -33,16 +35,13 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public DashBoard dashboard() {
-        DashBoard dashBoard = new DashBoard();
         // find userId from the Request Context
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userId = user.getId();
         // query database with findAll Contacts with current userId
-//        String userId = "constant_user_id";
-        String userId = "000";
         long totalContacts = getTotalNumberOfContacts(userId);
         long totalFavouriteContacts = getTotalNumberOfFavouriteContacts(userId);
-        dashBoard.setTotalContacts(totalContacts);
-        dashBoard.setTotalFavourites(totalFavouriteContacts);
-        return dashBoard;
+        return new DashBoard(totalContacts, totalFavouriteContacts);
     }
 
     private long getTotalNumberOfFavouriteContacts(String userId) {

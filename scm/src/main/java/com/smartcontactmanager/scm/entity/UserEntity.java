@@ -1,12 +1,9 @@
 package com.smartcontactmanager.scm.entity;
 
-import com.smartcontactmanager.scm.enums.Provider;
+import com.smartcontactmanager.scm.model.enums.Provider;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.ArrayList;
 
 @Entity
 @Getter
@@ -33,10 +30,9 @@ public class UserEntity {
     private boolean emailVerified = false;
     @Column(name = "phone_verified")
     private boolean phoneVerified = false;
-
     @Enumerated(value = EnumType.STRING)
     @Column(name = "provider")
-    private Provider provider = Provider.SELF;
+    private Provider provider;
     @Column(name = "provider_user_id")
     private String providerUserId;
 

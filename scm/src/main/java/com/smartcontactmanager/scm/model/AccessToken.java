@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DashBoard {
-    private long totalContacts;
-    private long totalFavourites;
+public class AccessToken {
+    private String accessToken;
 }

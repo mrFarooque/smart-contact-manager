@@ -9,9 +9,13 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +23,12 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private CustomFilter customFilter;
+
+    @Autowired
+    private OAuthSuccessHandler oAuthSuccessHandler;
 
     @Bean
     public AuthenticationProvider getAuthenticationProvider() {
@@ -30,15 +40,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors().disable();
-        httpSecurity.csrf().disable();
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers(HttpMethod.POST, "/api/user/signup").permitAll();
-            authorize.requestMatchers("/api/user/**").authenticated();
+            authorize.requestMatchers(HttpMethod.POST, "/api/signup").permitAll();
+            authorize.requestMatchers("/api/login").permitAll();
+            authorize.requestMatchers("/api/user/**").permitAll();
             authorize.anyRequest().permitAll();
         });
-        httpSecurity.formLogin(Customizer.withDefaults());
+        httpSecurity.oauth2Client(Customizer.withDefaults());
+        httpSecurity.oauth2Login(form -> form.loginPage("/login")
+                .successHandler(oAuthSuccessHandler));
+        httpSecurity.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
-
     }
+
+//    @Bean
+//    public WebMvcConfigurer corsCofiguration() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").allowedHeaders("*").allowedMethods("*").allowedOrigins("http://localhost:5500");
+//            }
+//        };
+//    }
 }
