@@ -1,11 +1,13 @@
 package com.smartcontactmanager.scm.controller;
 
+import com.smartcontactmanager.scm.model.Contact;
 import com.smartcontactmanager.scm.model.Contacts;
 import com.smartcontactmanager.scm.model.request.ContactQuery;
 import com.smartcontactmanager.scm.model.request.ContactRequest;
 import com.smartcontactmanager.scm.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,14 +33,25 @@ public class ContactController {
 
     @PutMapping("/{id}/favourite")
     @ResponseStatus(HttpStatus.OK)
-    public void addContactToFavourite(@PathVariable("id") String contactId) {
-        contactService.addContactToFavourite(contactId);
+    public void toggleContactToFavourite(@PathVariable("id") String contactId) {
+        contactService.toggleContactToFavourite(contactId);
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Contact getContactById(@PathVariable("id") String contactId) {
+        return contactService.getContactById(contactId);
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Contacts getContacts(ContactQuery contactQuery) {
         return contactService.getContacts(contactQuery);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteContact(@PathVariable("id") String contactId) {
+        contactService.deleteContact(contactId);
     }
 }

@@ -71,11 +71,20 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void addContactToFavourite(String contactId) {
+    public void toggleContactToFavourite(String contactId) {
         ContactEntity contactEntity = getContactEntityById(contactId);
-        System.out.println("found");
-        contactEntity.setFavorite(true);
+        if (contactEntity.getFavorite()) {
+            contactEntity.setFavorite(false);
+        } else {
+            contactEntity.setFavorite(true);
+        }
         contactRepository.save(contactEntity);
+    }
+
+    @Override
+    public void deleteContact(String contactId) {
+        ContactEntity contactEntity = getContactEntityById(contactId);
+        contactRepository.delete(contactEntity);
     }
 
     @Override
@@ -84,8 +93,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public Contact getContactById(String userId, String contactId) {
-        return null;
+    public Contact getContactById(String contactId) {
+        return convertDAOToAPI(getContactEntityById(contactId));
     }
 
     private ContactEntity getContactEntityById(String id) {

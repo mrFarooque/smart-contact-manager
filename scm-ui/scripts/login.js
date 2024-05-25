@@ -30,7 +30,7 @@ async function login() {
       })
       .catch((err) => window.alert("email or password invalid"));
     console.log("access token", accessToken);
-    window.localStorage.setItem("scm-access-token", accessToken["accessToken"]);
+    window.localStorage.setItem(SCM_TOKEN_NAME, accessToken["accessToken"]);
     window.location.assign(HOME_PAGE);
   }
 }

@@ -59,6 +59,7 @@ async function display_contacts() {
       actions.appendChild(deleteButton);
 
       favouriteBtn.addEventListener("click", async () => {
+        event.stopPropagation();
         const url = BASE_URL + "/api/contacts/" + ele.id + "/favourite";
         await fetch(url, {
           method: "put",
@@ -72,9 +73,27 @@ async function display_contacts() {
         });
       });
 
-      deleteButton.addEventListener("click", () =>
-        console.log("del", index, ele.name)
-      );
+      deleteButton.addEventListener("click", async () => {
+        event.stopPropagation();
+        await fetch(BASE_URL + "/api/contacts/" + ele.id, {
+          method: "delete",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem(SCM_TOKEN_NAME),
+          },
+        }).then((res) => {
+          if (res.status == 204) {
+            console.log("display again");
+            display_contacts();
+          }
+        });
+      });
+
+      newRow.addEventListener("click", () => {
+        const params = new URLSearchParams({
+          id: ele.id,
+        }).toString();
+        window.location.assign(`./view_contact.html?${params}`);
+      });
     });
   }
 }

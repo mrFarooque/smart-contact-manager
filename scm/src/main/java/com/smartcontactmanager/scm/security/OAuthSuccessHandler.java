@@ -36,14 +36,20 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         user.setProfilePic(oAuth2User.getAttribute("picture"));
         user.setProvider(Provider.GOOGLE);
         try {
+            System.out.println("user creating: " + user.getName());
             logInService.createUser(user);
         } catch (InvalidRequestException e) {
+            System.out.println("exception raised");
             if (e.getErrorMessage().equals("user already exists")) {
+                System.out.println("user already exists");
                 AccessToken accessToken = logInService.generateAccessToken(user.getEmail());
                 String redirectUrl = BASE_URL + "?token=" + accessToken.getAccessToken();
                 new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
+                return;
             }
         }
-
+        AccessToken accessToken = logInService.generateAccessToken(user.getEmail());
+        String redirectUrl = BASE_URL + "?token=" + accessToken.getAccessToken();
+        new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }
