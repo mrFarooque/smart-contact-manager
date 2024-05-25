@@ -11,3 +11,16 @@
   background-color: rgb(204 204 204); /*light mode*/
   cursor: pointer;
 }
+
+#user-profile-pic {
+  width: 50;
+  margin-right: 3%;
+}
+
+#sidebar {
+  width: 18%;
+}
+
+#content-area {
+  width: 82%;
+}

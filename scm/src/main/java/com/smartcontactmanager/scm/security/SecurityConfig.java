@@ -41,27 +41,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.cors(AbstractHttpConfigurer::disable);
+//        httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers(HttpMethod.POST, "/api/signup").permitAll();
-            authorize.requestMatchers("/api/login").permitAll();
-            authorize.requestMatchers("/api/user/**").permitAll();
+//            authorize.requestMatchers(HttpMethod.POST, "/api/signup").permitAll();
+//            authorize.requestMatchers("/api/login").permitAll();
+//            authorize.requestMatchers("/api/user/**").permitAll();
+//            authorize.requestMatchers("/api/contacts/**").permitAll();
             authorize.anyRequest().permitAll();
         });
-        httpSecurity.oauth2Client(Customizer.withDefaults());
+//        httpSecurity.oauth2Client(Customizer.withDefaults());
         httpSecurity.oauth2Login(form -> form.loginPage("/login")
                 .successHandler(oAuthSuccessHandler));
         httpSecurity.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
-//    @Bean
-//    public WebMvcConfigurer corsCofiguration() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**").allowedHeaders("*").allowedMethods("*").allowedOrigins("http://localhost:5500");
-//            }
-//        };
-//    }
+    @Bean
+    public WebMvcConfigurer corsCofiguration() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedHeaders("*").allowedMethods("*").allowedOrigins("http://localhost:5500");
+            }
+        };
+    }
 }

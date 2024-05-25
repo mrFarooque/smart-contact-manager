@@ -16,6 +16,6 @@ public class ContactRequest {
     private String phoneNumber;
     private String address;
     private String description;
-    private Boolean favourite;
     private MultipartFile image;
+    private Boolean favourite;
 }

@@ -1,5 +1,3 @@
-BASE_URL = "http://localhost:8080";
-
 async function login() {
   event.preventDefault();
   let email = loginForm.email.value;
@@ -33,7 +31,7 @@ async function login() {
       .catch((err) => window.alert("email or password invalid"));
     console.log("access token", accessToken);
     window.localStorage.setItem("scm-access-token", accessToken["accessToken"]);
-    window.location.assign("./index.html");
+    window.location.assign(HOME_PAGE);
   }
 }
 

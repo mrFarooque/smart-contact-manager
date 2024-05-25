@@ -8,8 +8,9 @@ import com.smartcontactmanager.scm.model.request.ContactRequest;
 
 public interface ContactService {
     DashBoard dashboard();
-    Contact addContact(String userId, ContactRequest contact);
+    void addContact(ContactRequest contact);
+    void addContactToFavourite(String contactId);
     Contact updateContact(String userId, String contactId, Contact contact);
     Contact getContactById(String userId, String contactId);
-    Contacts getContacts(String userId, ContactQuery contactQuery);
+    Contacts getContacts(ContactQuery contactQuery);
 }

@@ -34,15 +34,20 @@ public class UserController {
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
-    @PostMapping("/{userId}/contact")
-    public Contact addContact(@PathVariable String userId, ContactRequest contactRequest){
-        return contactService.addContact(userId, contactRequest);
+    @GetMapping("/")
+    public ResponseEntity<User> getUser() {
+        return new ResponseEntity<>(userService.getUser(), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}/contact")
-    public Contacts getAllContacts(@PathVariable String userId, ContactQuery contactQuery) {
-        return contactService.getContacts(userId, contactQuery);
-    }
+//    @PostMapping("/{userId}/contact")
+//    public Contact addContact(@PathVariable String userId, ContactRequest contactRequest){
+//        return contactService.addContact(userId, contactRequest);
+//    }
+
+//    @GetMapping("/{userId}/contact")
+//    public Contacts getAllContacts(@PathVariable String userId, ContactQuery contactQuery) {
+//        return contactService.getContacts(contactQuery);
+//    }
 
     public void viewAllContacts() {
 

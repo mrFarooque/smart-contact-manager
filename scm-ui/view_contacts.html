@@ -12,34 +12,12 @@
     <link rel="stylesheet" href="./styles/view_contacts.css" />
   </head>
   <body>
-    <!-- navbar -->
-    <nav class="navbar bg-body-tertiary">
-      <div class="container-fluid">
-        <a class="navbar-brand">SCM</a>
-        <div class="toggle-container m-0">
-          <label class="switch">
-            <input type="checkbox" id="toggleButton" />
-            <span class="slider"></span>
-          </label>
-          <label for="toggleButton">Dark Mode</label>
-        </div>
-      </div>
-    </nav>
-
-    <div class="row h-100 justify-content-between">
+    <div class="row h-100">
       <!-- sidebar -->
       <div
+        id="sidebar"
         class="bg-secondary-subtle col-lg-3 col-sm-3 col-md-3 d-flex flex-column align-items-center"
       >
-        <div class="w-75 text-center h-50">
-          <img
-            style="border-radius: 200px"
-            class="mt-5 w-75"
-            src="https://ca.slack-edge.com/T011QA5NKB7-U04EH34AL1L-a75f23c2b103-512"
-            alt="user_picture"
-          />
-          <p class="h5 w-100 text-center text-uppercase p-2">Farooque</p>
-        </div>
         <div class="w-75 h-100 pt-5 sidebar-list">
           <div id="sidebar-dashboard-text">
             <p class="lead mb-1 p-3">Dashboard</p>
@@ -47,7 +25,7 @@
           <div id="add-contact">
             <p class="lead mb-1 p-3">Add Contacts</p>
           </div>
-          <div id="view-contact">
+          <div id="view-contacts">
             <p class="lead mb-1 p-3 selected">View Contacts</p>
           </div>
           <div id="favourite">
@@ -56,41 +34,46 @@
           <div id="dark">
             <p class="lead mb-1 p-3">Dark Mode</p>
           </div>
+          <div id="logout-btn">
+            <p class="lead mb-1 p-3">Logout</p>
+          </div>
+        </div>
+        <div class="container-fluid w-75 mb-5 d-flex align-items-center">
+          <img
+            id="user-profile-pic"
+            style="border-radius: 200px"
+            src="./images/default_user_logo.jpg"
+            alt="user_picture"
+          />
+          <p id="user-name" class="lead w-100 p-2 m-0">user name</p>
         </div>
       </div>
       <!-- body -->
-      <div id="content-area" class="col-9 col-lg-9 col-sm-9 col-md-9 mt-5">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td colspan="2">Larry the Bird</td>
-              <td>@twitter</td>
-            </tr>
-          </tbody>
-        </table>
+      <div id="content-area" class="col-9 col-lg-9 col-sm-9 col-md-9 pt-5">
+        <div class="d-flex">
+          <table class="table table-hover w-75 m-auto">
+            <thead>
+              <tr>
+                <th scope="col">Profile pic</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </body>
 </html>
+<script src="./scripts/constants.js"></script>
+<script src="./scripts/sidebar.js"></script>
 <script src="./scripts/view_contacts.js"></script>
+<script
+  src="https://kit.fontawesome.com/7e4208235c.js"
+  crossorigin="anonymous"
+></script>

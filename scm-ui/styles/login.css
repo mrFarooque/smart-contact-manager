@@ -1,0 +1,73 @@
+#form-container {
+  /* border: 1px solid black; */
+  margin-top: 10%;
+  width: 40%;
+}
+
+form {
+  width: 50%;
+  margin: auto;
+}
+
+#seperator {
+  display: flex;
+  flex-direction: row;
+}
+
+#oauth-div {
+  text-align: center;
+  width: 50%;
+}
+
+#oauth-div button {
+  width: 100%;
+  background: none;
+  border: 1px solid #afafaf;
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-start;
+  height: 5%;
+  text-align: center;
+  align-items: center;
+  margin-bottom: 3%;
+  padding-top: 7%;
+  padding-bottom: 7%;
+}
+
+button p {
+  margin: 0;
+  padding: 0;
+  margin-left: 3%;
+}
+
+img {
+  height: 30px;
+  width: 30px;
+}
+
+h3 {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  margin-bottom: 3%;
+}
+
+#log-in-btn {
+  border: none;
+  background-color: #10a37f;
+  width: 100%;
+  border-radius: 10px;
+  height: 5%;
+  margin-bottom: 3%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding-top: 7%;
+  padding-bottom: 7%;
+}
+
+#log-in-btn p {
+  margin: 0;
+  padding: 0;
+  color: white;
+}

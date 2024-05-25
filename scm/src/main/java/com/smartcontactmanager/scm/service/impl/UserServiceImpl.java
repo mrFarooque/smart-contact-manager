@@ -6,6 +6,7 @@ import com.smartcontactmanager.scm.model.User;
 import com.smartcontactmanager.scm.repository.UserRepository;
 import com.smartcontactmanager.scm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,12 @@ public class UserServiceImpl implements UserService {
 //        userEntity.setAbout(user.getAbout());
 //        userEntity.setProfilePic(user.getProfilePic());
         return convertDAOToAPI(userRepository.save(userEntity));
+    }
+
+    @Override
+    public User getUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getUserByEmail(email);
     }
 
     @Override

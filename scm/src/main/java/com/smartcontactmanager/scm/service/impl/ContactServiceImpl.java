@@ -2,7 +2,7 @@ package com.smartcontactmanager.scm.service.impl;
 
 import com.smartcontactmanager.scm.entity.ContactEntity;
 import com.smartcontactmanager.scm.entity.UserEntity;
-import com.smartcontactmanager.scm.exception.InvalidRequestException;
+import com.smartcontactmanager.scm.exception.ResourceNotFoundException;
 import com.smartcontactmanager.scm.model.Contact;
 import com.smartcontactmanager.scm.model.Contacts;
 import com.smartcontactmanager.scm.model.DashBoard;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.smartcontactmanager.scm.exception.ErrorCodes.INVALID_IMAGE_CONTENT_TYPE;
+import static com.smartcontactmanager.scm.exception.ErrorCodes.CONTACT_NOT_EXISTS;
 
 @Service
 public class ContactServiceImpl implements ContactService {
@@ -36,12 +36,16 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public DashBoard dashboard() {
         // find userId from the Request Context
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userId = user.getId();
+        String userId = getUserIdFromRequestContext();
         // query database with findAll Contacts with current userId
         long totalContacts = getTotalNumberOfContacts(userId);
         long totalFavouriteContacts = getTotalNumberOfFavouriteContacts(userId);
         return new DashBoard(totalContacts, totalFavouriteContacts);
+    }
+
+    private String getUserIdFromRequestContext() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getId();
     }
 
     private long getTotalNumberOfFavouriteContacts(String userId) {
@@ -56,13 +60,22 @@ public class ContactServiceImpl implements ContactService {
                 criteriaBuilder.equal(root.get("userEntity").get("id"), userId)));
         return contactRepository.count(specification);
     }
+
     @Override
-    public Contact addContact(String userId, ContactRequest contactRequest) {
+    public void addContact(ContactRequest contactRequest) {
         validate(contactRequest);
+        String userId = getUserIdFromRequestContext();
         UserEntity userEntity = userService.getUserEntityById(userId);
         ContactEntity contactEntity = convertAPIToDAO(contactRequest, userEntity);
-        ContactEntity savedContactEntity = contactRepository.save(contactEntity);
-        return convertDAOToAPI(savedContactEntity);
+        contactRepository.save(contactEntity);
+    }
+
+    @Override
+    public void addContactToFavourite(String contactId) {
+        ContactEntity contactEntity = getContactEntityById(contactId);
+        System.out.println("found");
+        contactEntity.setFavorite(true);
+        contactRepository.save(contactEntity);
     }
 
     @Override
@@ -75,10 +88,14 @@ public class ContactServiceImpl implements ContactService {
         return null;
     }
 
+    private ContactEntity getContactEntityById(String id) {
+        return contactRepository.findByIdAndUserEntityId(id, getUserIdFromRequestContext()).orElseThrow(() -> new ResourceNotFoundException(CONTACT_NOT_EXISTS, "Contact doesn't exists"));
+    }
+
     @Override
-    public Contacts getContacts(String userId, ContactQuery contactQuery) {
+    public Contacts getContacts(ContactQuery contactQuery) {
         Specification<ContactEntity> specification = Specification.where(((root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("userEntity").get("id"), userId)));
+                criteriaBuilder.equal(root.get("userEntity").get("id"), getUserIdFromRequestContext())));
         if (contactQuery != null && contactQuery.getName() != null && !contactQuery.getName().isEmpty()) {
             specification = specification.and(((root, query, criteriaBuilder) -> root.get("name").in(contactQuery.getName())));
         }
@@ -87,11 +104,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     private void validate(ContactRequest contact) {
-        // validate image content type
-        String contentType = contact.getImage().getContentType();
-        if (contentType != null && !contentType.isEmpty() && !contentType.equals("image/png")) {
-            throw new InvalidRequestException(INVALID_IMAGE_CONTENT_TYPE, "Image content type not valid");
-        }
+
     }
 
     private ContactEntity convertAPIToDAO(ContactRequest contact, UserEntity userEntity) {
@@ -117,11 +130,12 @@ public class ContactServiceImpl implements ContactService {
         Contact contact = new Contact();
         contact.setId(contactEntity.getId());
         contact.setName(contactEntity.getName());
+        contact.setEmail(contactEntity.getEmail());
+        contact.setPhoneNumber(contactEntity.getPhoneNumber());
         contact.setDescription(contactEntity.getDescription());
         contact.setAddress(contactEntity.getAddress());
-        contact.setFavourite(contactEntity.getFavorite());
-        contact.setEmail(contactEntity.getEmail());
         contact.setImage(contactEntity.getImage());
+        contact.setFavourite(contactEntity.getFavorite());
         return contact;
     }
 
